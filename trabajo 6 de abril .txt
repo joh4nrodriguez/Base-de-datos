@@ -1,0 +1,360 @@
+Microsoft Windows [Versión 10.0.22000.556]
+(c) Microsoft Corporation. Todos los derechos reservados.
+
+C:\WINDOWS\system32>cd\
+
+C:\>laragon
+"laragon" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+C:\>cd laragon
+
+C:\laragon>cd bin
+
+C:\laragon\bin>cd mysql
+
+C:\laragon\bin\mysql>cd C:\laragon\bin\mysql\mysql-5.7.33-winx64\bin
+
+C:\laragon\bin\mysql\mysql-5.7.33-winx64\bin>mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4
+Server version: 5.7.33 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases
+    -> ;
++---------------------------+
+| Database                  |
++---------------------------+
+| information_schema        |
+| campeonato                |
+| campeonato de futbol sala |
+| citas_johan               |
+| clinica                   |
+| ejemplo                   |
+| liga                      |
+| mydb                      |
+| mysql                     |
+| performance_schema        |
+| prestamo                  |
+| sys                       |
+| taller                    |
+| taller_inventado          |
+| universidad               |
++---------------------------+
+15 rows in set (0.00 sec)
+
+mysql> use citas_johan
+Database changed
+mysql> create table medicos(
+    -> MedIdentificacion char(10) not null,
+    -> MedNombres varchar(50) not null,
+    -> MedApellidos varchar(50) not null,
+    -> primary key(MedIdentificacion)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> show tables from citas;
+ERROR 1049 (42000): Unknown database 'citas'
+mysql> show tables from citas_johan;
++-----------------------+
+| Tables_in_citas_johan |
++-----------------------+
+| medicos               |
++-----------------------+
+1 row in set (0.00 sec)
+
+mysql> describe Medicos
+    ->
+    -> ;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| MedIdentificacion | char(10)    | NO   | PRI | NULL    |       |
+| MedNombres        | varchar(50) | NO   |     | NULL    |       |
+| MedApellidos      | varchar(50) | NO   |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> create table pacientes(
+    -> PacIdentificacion char(10) not null;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> PacIdentificacion char(10) not null,
+    -> PacNombres varchar(50) not null,
+    -> PacApellidos varchar(50) not null,
+    -> -> PacFechaNacimiento date not null,
+    -> -> PacSexo enum(‘M‘,‘F‘) not null,
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'PacIdentificacion char(10) not null,
+PacNombres varchar(50) not null,
+PacApellid' at line 1
+mysql> create table pacientes
+    -> (
+    -> PacIdentificacion char(10) not null,
+    ->  PacNombres varchar(50) not null,
+    -> PacApellidos varchar(50) not null,
+    -> PacFechaNacimiento date not null,
+    -> PacSexo enum('M','F')not null,
+    -> primary key (PacIdentificacion)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> show tables from citas_johan;
++-----------------------+
+| Tables_in_citas_johan |
++-----------------------+
+| medicos               |
+| pacientes             |
++-----------------------+
+2 rows in set (0.00 sec)
+
+mysql> describe pacientes;
++--------------------+---------------+------+-----+---------+-------+
+| Field              | Type          | Null | Key | Default | Extra |
++--------------------+---------------+------+-----+---------+-------+
+| PacIdentificacion  | char(10)      | NO   | PRI | NULL    |       |
+| PacNombres         | varchar(50)   | NO   |     | NULL    |       |
+| PacApellidos       | varchar(50)   | NO   |     | NULL    |       |
+| PacFechaNacimiento | date          | NO   |     | NULL    |       |
+| PacSexo            | enum('M','F') | NO   |     | NULL    |       |
++--------------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> create table Consultorios(
+    -> ConNumero int(3) not null,
+    -> ConNombre varchar (50) not null,
+    -> primary key(ConNumero)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> show tables from citas;
+ERROR 1049 (42000): Unknown database 'citas'
+mysql> show tables from citas_johan;
++-----------------------+
+| Tables_in_citas_johan |
++-----------------------+
+| consultorios          |
+| medicos               |
+| pacientes             |
++-----------------------+
+3 rows in set (0.00 sec)
+
+mysql> describe consultorios;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| ConNumero | int(3)      | NO   | PRI | NULL    |       |
+| ConNombre | varchar(50) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> create table citas(
+    -> CitNumero int auto_increment,
+    -> CitFecha date not null,
+    -> CitHora varchar(10) not null,
+    -> CitPaciente char (10) not null,
+    -> CitMedico char (10) not null,
+    -> CitConsultorio int(3) not null,
+    -> CitEstado enum ('Asignada','Cumplida')not null default 'Asignada',
+    -> primary key (CitNumero),
+    -> foreign key (CitPaciente) references Pacientes (PacIdentificacion),
+    -> foreign key (CitMedico) references Medicos (MedIdentificacion),
+    -> foreing key (CitConsultorio) references consultorios (ConNumero)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key (CitConsultorio) references consultorios (ConNumero)
+)' at line 12
+mysql> create table citas(
+    -> CitNumero int auto_increment,
+    -> CitFecha date not null,
+    -> CitHora varchar(10) not null,
+    -> CitPaciente char (10) not null,
+    -> CitMedico char (10) not null,
+    -> CitConsultorio int(3) not null,
+    -> CitEstado enum ('Asignada','Cumplida')not null default 'Asignada',
+    -> primary key (CitNumero),
+    -> foreign key (CitPaciente) references Pacientes (PacIdentificacion),
+    -> foreign key (CitMedico) references Medicos (MedIdentificacion),
+    -> foreign key (CitConsultorio) references consultorios (ConNumero)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table Tratamientos(
+    -> TraNumero int,
+    -> TraFechaAsignado date not null,
+    -> Descripcion text not null,
+    -> TraFechaInicio varchar(10);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 5
+mysql> create table Tratamientos(
+    -> TraNumero int,
+    -> TraFechaAsignado date not null,
+    -> Descripcion text not null,
+    -> TraFechaInicio varchar(10),
+    -> TraObservaciones text not null,
+    -> TraTemporal varchar(2),
+    ->  TraPaciente char(10) not null,
+    -> primary key (TraNumero),
+    -> foreign key (TraPacientes) references Pacientes (PacIdentificacion)
+    -> );
+ERROR 1072 (42000): Key column 'TraPacientes' doesn't exist in table
+mysql> create table Tratamientos(
+    -> TraNumero int,
+    -> TraFechaAsignado date not null,
+    -> Descripcion text not null,
+    -> TraFechaInicio varchar(10),
+    -> TraObservaciones text not null,
+    -> TraTemporal varchar(2),
+    ->  TraPaciente char(10) not null,
+    -> primary key (TraNumero),
+    -> foreign key (TraPaciente) references Pacients (PacIdentificacion)
+    -> );
+ERROR 1215 (HY000): Cannot add foreign key constraint
+mysql> create table Tratamientos(
+    -> TraNumero int,
+    -> TraFechaAsignado date not null,
+    -> Descripcion text not null,
+    -> TraFechaInicio varchar(10),
+    -> TraObservaciones text not null,
+    -> TraTemporal varchar(2),
+    ->  TraPacientes char(10) not null,
+    ->  primary key (TraNumero),
+    -> foreign key (TraPacientes) references Pacientes ( PacIdentificacion)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> describe Consultorios;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| ConNumero | int(3)      | NO   | PRI | NULL    |       |
+| ConNombre | varchar(50) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> describe tratamientos;
++------------------+-------------+------+-----+---------+-------+
+| Field            | Type        | Null | Key | Default | Extra |
++------------------+-------------+------+-----+---------+-------+
+| TraNumero        | int(11)     | NO   | PRI | NULL    |       |
+| TraFechaAsignado | date        | NO   |     | NULL    |       |
+| Descripcion      | text        | NO   |     | NULL    |       |
+| TraFechaInicio   | varchar(10) | YES  |     | NULL    |       |
+| TraObservaciones | text        | NO   |     | NULL    |       |
+| TraTemporal      | varchar(2)  | YES  |     | NULL    |       |
+| TraPacientes     | char(10)    | NO   | MUL | NULL    |       |
++------------------+-------------+------+-----+---------+-------+
+7 rows in set (0.02 sec)
+
+mysql> alter table tratamientos
+    -> change TraFechaInicio date not null;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'not null' at line 2
+mysql> alter table tratamientos
+    -> modify column TraFechaIncio date not null;
+ERROR 1054 (42S22): Unknown column 'TraFechaIncio' in 'tratamientos'
+mysql> alter table tratamientos
+    -> modify column TraFechaIncio date not null;
+ERROR 1054 (42S22): Unknown column 'TraFechaIncio' in 'tratamientos'
+mysql> alter table tratamientos
+    -> modify column TraFechaInicio date not null;
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> describe tratamientos;
++------------------+------------+------+-----+---------+-------+
+| Field            | Type       | Null | Key | Default | Extra |
++------------------+------------+------+-----+---------+-------+
+| TraNumero        | int(11)    | NO   | PRI | NULL    |       |
+| TraFechaAsignado | date       | NO   |     | NULL    |       |
+| Descripcion      | text       | NO   |     | NULL    |       |
+| TraFechaInicio   | date       | NO   |     | NULL    |       |
+| TraObservaciones | text       | NO   |     | NULL    |       |
+| TraTemporal      | varchar(2) | YES  |     | NULL    |       |
+| TraPacientes     | char(10)   | NO   | MUL | NULL    |       |
++------------------+------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> alter table tratamientos
+    -> add column TraFechaFin date not null
+    -> after TraFechaInicio;
+Query OK, 0 rows affected (0.08 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> describe tratamientos;
++------------------+------------+------+-----+---------+-------+
+| Field            | Type       | Null | Key | Default | Extra |
++------------------+------------+------+-----+---------+-------+
+| TraNumero        | int(11)    | NO   | PRI | NULL    |       |
+| TraFechaAsignado | date       | NO   |     | NULL    |       |
+| Descripcion      | text       | NO   |     | NULL    |       |
+| TraFechaInicio   | date       | NO   |     | NULL    |       |
+| TraFechaFin      | date       | NO   |     | NULL    |       |
+| TraObservaciones | text       | NO   |     | NULL    |       |
+| TraTemporal      | varchar(2) | YES  |     | NULL    |       |
+| TraPacientes     | char(10)   | NO   | MUL | NULL    |       |
++------------------+------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql>
+
+
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> show tables from citas;
+ERROR 1049 (42000): Unknown database 'citas'
+mysql> show tables from citas_johan;
++-----------------------+
+| Tables_in_citas_johan |
++-----------------------+
+| consultorios          |
+| medicos               |
+| pacientes             |
++-----------------------+
+3 rows in set (0.00 sec)
+
+mysql> describe consultorios;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| ConNumero | int(3)      | NO   | PRI | NULL    |       |
+| ConNombre | varchar(50) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> create table citas(
+    -> CitNumero int auto_increment,
+    -> CitFecha date not null,
+    -> CitHora varchar(10) not null,
+    -> CitPaciente char (10) not null,
+    -> CitMedico char (10) not null,
+    -> CitConsultorio int(3) not null,
+    -> CitEstado enum ('Asignada','Cumplida')not null default 'Asignada',
+    -> primary key (CitNumero),
+    -> foreign key (CitPaciente) references Pacientes (PacIdentificacion),
+    -> foreign key (CitMedico) references Medicos (MedIdentificacion),
+    -> foreing key (CitConsultorio) references consultorios (ConNumero)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key (CitConsultorio) references consultorios (ConNumero)
+)' at line 12
+mysql> create table citas(
+    -> CitNumero int auto_increment,
+    -> CitFecha date not null,
+    -> CitHora varchar(10) not null,
+    -> CitPaciente char (10) not null,
+    -> CitMedico char (10) not null,
+    -> CitConsultorio int(3) not null,
+    -> CitEstado enum ('Asignada','Cumplida')not null default 'Asignada',
+    -> primary key (CitNumero),
+    -> foreign key (CitPaciente) references Pacientes (PacIdentificacion),
+    -> foreign key (CitMedico) references Medicos (MedIdentificacion),
+    -> foreign key (CitConsultorio) references consultorios (ConNumero)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql>
+

@@ -1,0 +1,5 @@
+create trigger calse_2 after inser into on for each row insert into log(accion) values (se inserto un nuevo registro en la base de datos)
+
+SELECT p.PacNombres, p.PacIdentificacion, t.TraObservaciones from pacientes p INNER JOIN tratamientos t on p.PacIdentificacion = t.TraPacientes
+
+select p.pacnombres as Nombres, t TraObservaciones as Observaciones from tratamientos t left  join pacientes p on p.pacidentificacion = t. practratamiento 
